@@ -1,14 +1,19 @@
-JavaScript Errors
------------------
-What is an Error?
+# 🚨 Errors in JavaScript
 
-An error is an unexpected condition that prevents a JavaScript program from executing correctly.
+## 📖 Introduction
+
+An **error** is an unexpected condition that prevents a JavaScript program from executing as expected.
 
 Errors can occur:
 
-Before execution (during parsing)
-During execution (runtime)
-Types of JavaScript Errors
+- **Before execution (Compile Time)**
+- **During execution (Runtime)**
+
+---
+
+# 📌 Types of JavaScript Errors
+
+```text
 JavaScript Errors
 │
 ├── Syntax Errors (Compile Time)
@@ -22,182 +27,267 @@ JavaScript Errors
       ├── EvalError
       ├── AggregateError
       └── Custom Errors
-1. SyntaxError
-Definition
+```
 
-A SyntaxError occurs when the JavaScript parser encounters code that violates JavaScript grammar.
+---
 
-The parser detects it before execution begins.
+# 1️⃣ SyntaxError
 
-Example 1
+## Definition
+
+A **SyntaxError** occurs when the JavaScript parser encounters invalid JavaScript syntax.
+
+Since the parser detects it before execution begins, the program never starts running.
+
+### Example
+
+```javascript
 let = x 10;
+```
 
-Output
+**Output**
 
+```text
 SyntaxError: Unexpected token '='
-Example 2
+```
+
+Another example:
+
+```javascript
 if ( {
     console.log("Hello");
 }
+```
 
-Output
+### Key Points
 
-SyntaxError: Unexpected token '{'
-Key Points
-Occurs during parsing.
-Program execution never starts.
-Cannot be caught with try...catch if the script itself contains invalid syntax.
+- ✅ Occurs during parsing.
+- ✅ Execution never starts.
+- ✅ Cannot be caught using `try...catch` if the script itself contains invalid syntax.
 
-2. ReferenceError
-Definition
+---
 
-A ReferenceError occurs when JavaScript tries to access a variable that doesn't exist in the current scope or is not accessible.
+# 2️⃣ ReferenceError
 
-Example 1
+## Definition
+
+A **ReferenceError** occurs when JavaScript tries to access a variable that doesn't exist or isn't accessible in the current scope.
+
+### Example
+
+```javascript
 console.log(age);
+```
 
-Output
+**Output**
 
+```text
 ReferenceError: age is not defined
-Example 2
+```
+
+### Another Example
+
+```javascript
 function test() {
     let x = 10;
 }
 
 console.log(x);
+```
 
-Output
+### Temporal Dead Zone (TDZ)
 
-ReferenceError
-Example 3 (TDZ)
+```javascript
 console.log(a);
 
 let a = 10;
+```
 
-Output
+**Output**
 
+```text
 ReferenceError:
 Cannot access 'a' before initialization
+```
 
-We'll understand this in detail when studying Hoisting and the Temporal Dead Zone (TDZ).
+> **Note**
+>
+> We'll understand this in detail while studying **Hoisting** and the **Temporal Dead Zone (TDZ)**.
 
-Common Causes
-Variable not declared.
-Accessing a block-scoped variable before initialization (let/const).
-Accessing a variable outside its scope.
+### Common Causes
 
-3. TypeError
-Definition
+- Accessing undeclared variables.
+- Accessing variables outside their scope.
+- Accessing `let` or `const` variables before initialization.
 
-A TypeError occurs when an operation is performed on a value of an inappropriate type.
+---
 
-Example 1
+# 3️⃣ TypeError
+
+## Definition
+
+A **TypeError** occurs when an operation is performed on a value of an inappropriate type.
+
+### Example 1
+
+```javascript
 let user = null;
 
 console.log(user.name);
+```
 
-Output
+**Output**
 
+```text
 TypeError:
 Cannot read properties of null
-Example 2
+```
+
+### Example 2
+
+```javascript
 const x = 10;
 
 x();
+```
 
-Output
+**Output**
 
+```text
 TypeError:
 x is not a function
-Example 3
+```
+
+### Example 3
+
+```javascript
 undefined.toString();
+```
 
-Output
+### Common Causes
 
-TypeError
-Common Causes
-Calling a non-function.
-Accessing properties on null or undefined.
-Using unsupported methods.
+- Calling a non-function.
+- Accessing properties of `null` or `undefined`.
+- Using unsupported methods.
 
-4. RangeError
-Definition
+---
 
-A RangeError occurs when a value is outside the allowable range.
+# 4️⃣ RangeError
 
-Example 1
+## Definition
+
+A **RangeError** occurs when a value is outside the allowed range.
+
+### Example 1
+
+```javascript
 new Array(-1);
+```
 
-Output
+**Output**
 
+```text
 RangeError:
 Invalid array length
-Example 2
+```
+
+### Example 2
+
+```javascript
 function test() {
     test();
 }
 
 test();
+```
 
-Output
+**Output**
 
+```text
 RangeError:
 Maximum call stack size exceeded
-Common Causes
-Invalid array size.
-Infinite recursion.
-Invalid numeric values for certain built-in APIs.
-5. URIError
+```
 
-Definition
+### Common Causes
 
-A URIError occurs when URI handling functions receive malformed input.
+- Invalid array length.
+- Infinite recursion.
+- Invalid numeric values passed to built-in APIs.
 
-Example
+---
+
+# 5️⃣ URIError
+
+## Definition
+
+A **URIError** occurs when URI encoding or decoding functions receive malformed input.
+
+### Example
+
+```javascript
 decodeURIComponent("%");
+```
 
-Output
+**Output**
 
+```text
 URIError:
 URI malformed
-Built-in URI Functions
-encodeURI()
-decodeURI()
-encodeURIComponent()
-decodeURIComponent()
+```
 
-6. EvalError
-Definition
+### URI Functions
 
-Historically associated with incorrect use of eval().
+- `encodeURI()`
+- `decodeURI()`
+- `encodeURIComponent()`
+- `decodeURIComponent()`
 
-Modern JavaScript engines rarely throw it directly.
+---
 
-Interview Point
+# 6️⃣ EvalError
 
-Know that it exists, but don't expect to encounter it in modern applications.
+## Definition
 
-7. AggregateError
-Definition
+`EvalError` is a legacy error type associated with the `eval()` function.
 
-An AggregateError represents multiple errors combined into a single error object.
+Modern JavaScript engines rarely throw this error directly.
 
-Common Usage
-Promise.any()
-Example
+> **Interview Tip**
+>
+> Know that it exists, but don't expect to see it in modern applications.
+
+---
+
+# 7️⃣ AggregateError
+
+## Definition
+
+An **AggregateError** represents multiple errors grouped into a single error object.
+
+Most commonly used with **`Promise.any()`**.
+
+### Example
+
+```javascript
 Promise.any([
     Promise.reject("Error A"),
     Promise.reject("Error B")
 ]);
+```
 
-Output
+**Output**
 
+```text
 AggregateError
+```
 
-8. Error (Base Class)
+---
 
-All standard JavaScript errors inherit from the Error object.
+# 🌳 Error Hierarchy
 
+All JavaScript errors inherit from the `Error` object.
+
+```text
 Error
 │
 ├── SyntaxError
@@ -207,14 +297,19 @@ Error
 ├── URIError
 ├── EvalError
 └── AggregateError
-Creating Custom Errors
-Using Error
+```
+
+---
+
+# 🛠 Creating Custom Errors
+
+```javascript
 throw new Error("Something went wrong");
+```
 
-Output
+### Example
 
-Error: Something went wrong
-Custom Validation
+```javascript
 function validateAge(age) {
     if (age < 18) {
         throw new Error("Age must be at least 18.");
@@ -222,45 +317,58 @@ function validateAge(age) {
 
     return "Eligible";
 }
+```
 
-console.log(validateAge(16));
+---
 
-Output
+# 🔥 throw Statement
 
-Error:
-Age must be at least 18.
-throw Statement
+The `throw` statement is used to explicitly raise an exception.
 
-The throw statement is used to explicitly raise an exception.
-
-Syntax
-throw expression;
-Example
+```javascript
 throw new Error("Network Error");
-try...catch
+```
+
+---
+
+# 🧩 try...catch
 
 Used to handle runtime errors gracefully.
 
+```javascript
 try {
+    let user = null;
+
     console.log(user.name);
 } catch (error) {
     console.log(error.message);
 }
-finally
+```
 
-The finally block executes regardless of whether an exception occurs.
+---
 
+# 🏁 finally
+
+The `finally` block always executes whether an error occurs or not.
+
+```javascript
 try {
     console.log("Try");
 } finally {
     console.log("Finally");
 }
+```
 
-Output
+**Output**
 
+```text
 Try
 Finally
-finally with return
+```
+
+### finally with return
+
+```javascript
 function test() {
     try {
         return 10;
@@ -270,12 +378,20 @@ function test() {
 }
 
 console.log(test());
+```
 
-Output
+**Output**
 
+```text
 Finally
 10
-Error Object Properties
+```
+
+---
+
+# 📦 Error Object Properties
+
+```javascript
 try {
     throw new Error("Invalid Input");
 } catch (error) {
@@ -283,39 +399,102 @@ try {
     console.log(error.message);
     console.log(error.stack);
 }
+```
 
-Output (conceptually)
+| Property | Description |
+|----------|-------------|
+| `name` | Error type |
+| `message` | Error message |
+| `stack` | Stack trace |
 
-Error
-Invalid Input
-Stack Trace
-Important Properties
-Property	Description
-name	Error type (e.g. TypeError)
-message	Error message
-stack	Stack trace showing where the error occurred
-SyntaxError vs ReferenceError vs TypeError
-Feature	SyntaxError	ReferenceError	TypeError
-Occurs	During parsing	During execution	During execution
-Cause	Invalid syntax	Variable not found or not accessible	Invalid operation on a value
-Execution Starts	❌ No	✅ Yes	✅ Yes
-Example	let = x 10	console.log(a)	null.name
-Interview Questions
-Q1. Can try...catch catch every JavaScript error?
+---
 
-No.
+# 📊 Common Errors Comparison
 
-It can catch runtime errors.
-It cannot catch syntax errors that prevent the script from being parsed.
-Q2. Difference between throw and return?
-throw	return
-Throws an exception	Returns a value
-Stops normal execution	Continues normal function flow
-Handled by catch	Handled by the caller
-Q3. Can we create custom errors?
+| Error | Cause | Example |
+|--------|-------|---------|
+| SyntaxError | Invalid syntax | `let = x 10;` |
+| ReferenceError | Variable not found | `console.log(a)` |
+| TypeError | Invalid operation | `null.name` |
+| RangeError | Invalid range | `new Array(-1)` |
+| URIError | Invalid URI | `decodeURIComponent("%")` |
+| AggregateError | Multiple promise failures | `Promise.any()` |
+| EvalError | Legacy `eval()` | Rare today |
+
+---
+
+# ⚖️ SyntaxError vs ReferenceError vs TypeError
+
+| Feature | SyntaxError | ReferenceError | TypeError |
+|----------|-------------|----------------|------------|
+| Occurs | Parsing | Runtime | Runtime |
+| Execution Starts | ❌ No | ✅ Yes | ✅ Yes |
+| Cause | Invalid syntax | Variable missing | Invalid operation |
+
+---
+
+# 🎯 Frequently Asked Interview Questions
+
+## 1. Can `try...catch` catch every JavaScript error?
+
+**No.**
+
+It catches **runtime errors** but **cannot catch syntax errors** already present in the script because parsing fails before execution begins.
+
+---
+
+## 2. Difference between `throw` and `return`?
+
+| throw | return |
+|--------|---------|
+| Throws an exception | Returns a value |
+| Stops execution | Continues normal flow |
+| Handled by `catch` | Handled by the caller |
+
+---
+
+## 3. Can we create custom errors?
 
 Yes.
 
+```javascript
 throw new Error("Custom Error");
+```
 
-You can also extend the built-in Error class for richer, application-specific errors.
+You can also extend the built-in `Error` class to create custom error types.
+
+---
+
+## 4. Does `finally` execute after `return`?
+
+**Yes.**
+
+The `finally` block executes before the function actually returns.
+
+---
+
+# 📝 Summary
+
+| Error Type | When It Occurs | Example |
+|------------|----------------|---------|
+| SyntaxError | Parsing | `let = x 10;` |
+| ReferenceError | Runtime | `console.log(a)` |
+| TypeError | Runtime | `null.name` |
+| RangeError | Runtime | `new Array(-1)` |
+| URIError | Runtime | `decodeURIComponent("%")` |
+| AggregateError | Runtime | `Promise.any()` |
+| EvalError | Runtime | Rarely used |
+
+---
+
+# ✅ Key Takeaways
+
+- **SyntaxError** → Invalid JavaScript syntax.
+- **ReferenceError** → Variable not found or inaccessible.
+- **TypeError** → Invalid operation on a value.
+- **RangeError** → Value outside the allowed range.
+- **URIError** → Invalid URI encoding/decoding.
+- **AggregateError** → Multiple errors grouped together.
+- Use **`try...catch...finally`** for runtime error handling.
+- Use **`throw`** to create custom exceptions.
+- All JavaScript errors inherit from the **`Error`** object.
