@@ -1,68 +1,79 @@
-# Truthy & Falsy Values in JavaScript
+# Module 1: JavaScript Fundamentals - Quick Revision
 
-## 📖 Introduction
+## Variables
 
-In JavaScript, conditions such as `if`, `while`, and logical operators (`&&`, `||`, `!`) do not require a boolean value. JavaScript automatically converts values to `true` or `false` using **Boolean Coercion**.
+- `var` → Function scoped, can be redeclared and reassigned, hoisted with `undefined`.
+- `let` → Block scoped, can be reassigned, cannot be redeclared in the same scope, Temporal Dead Zone (TDZ).
+- `const` → Block scoped, cannot be reassigned, must be initialized during declaration.
+- Prefer `const` by default, `let` when reassignment is needed, avoid `var`.
+
+---
+
+## Data Types
+
+### Primitive (Stored by Value)
+
+- String
+- Number
+- Boolean
+- Undefined
+- Null
+- Symbol
+- BigInt
+
+### Non-Primitive (Stored by Reference)
+
+- Object
+- Array
+- Function
+- Date
+- Map
+- Set
+
+---
+
+## Type Coercion
+
+- **Implicit Coercion** → Automatic conversion by JavaScript.
+- **Explicit Coercion** → Manual conversion using `Number()`, `String()`, `Boolean()`.
+
+Examples
 
 ```javascript
-if ("Hello") {
-    console.log("Executed");
-}
-```
-
-Output
-
-```javascript
-Executed
-```
-
-Internally, JavaScript behaves like:
-
-```javascript
-Boolean("Hello"); // true
+"5" + 2   // "52"
+"5" - 2   // 3
+true + 1  // 2
 ```
 
 ---
 
-# Truthy Values
+## Equality
 
-A **truthy value** is any value that becomes `true` when converted using `Boolean()`.
+### `==`
 
-Examples:
-
-```javascript
-true
-1
--1
-"Hello"
-"0"
-"false"
-[]
-{}
-function(){}
-Infinity
--Infinity
-```
-
-Example
+- Loose equality
+- Performs type coercion
 
 ```javascript
-Boolean([]);
+5 == "5" // true
 ```
 
-Output
+### `===`
+
+- Strict equality
+- No type coercion
 
 ```javascript
-true
+5 === "5" // false
 ```
+
+✅ Always prefer `===`.
 
 ---
 
-# Falsy Values
+## Truthy & Falsy
 
-A **falsy value** is any value that becomes `false` when converted using `Boolean()`.
-
-There are **exactly 8 falsy values** in JavaScript.
+### 8 Falsy Values
 
 ```javascript
 false
@@ -75,204 +86,142 @@ undefined
 NaN
 ```
 
+Everything else is truthy.
+
+Examples
+
+```javascript
+Boolean([])      // true
+Boolean({})      // true
+Boolean("false") // true
+```
+
+---
+
+## Operators
+
+### Arithmetic
+
+`+ - * / % **`
+
+### Assignment
+
+`= += -= *= /= %=`
+
+### Comparison
+
+`> < >= <= == === != !==`
+
+### Logical
+
+`&& || !`
+
+### Other
+
+- `??` → Nullish Coalescing
+- `?.` → Optional Chaining
+- `?:` → Ternary
+- `typeof`
+- `instanceof`
+
+---
+
+## Template Literals
+
+- Uses backticks (`` ` ``)
+- Supports interpolation using `${}`
+- Supports multiline strings
+- Supports tagged templates
+
 Example
 
 ```javascript
-Boolean(0);
-```
-
-Output
-
-```javascript
-false
+`Hello ${name}`
 ```
 
 ---
 
-# Boolean Conversion Table
+## Destructuring
 
-| Value | Boolean(value) |
-|--------|----------------|
-| `false` | `false` |
-| `0` | `false` |
-| `-0` | `false` |
-| `0n` | `false` |
-| `""` | `false` |
-| `" "` | `true` |
-| `"0"` | `true` |
-| `[]` | `true` |
-| `{}` | `true` |
-| `null` | `false` |
-| `undefined` | `false` |
-| `NaN` | `false` |
-| `1` | `true` |
-| `"Hello"` | `true` |
+### Object
+
+```javascript
+const { name, age } = user;
+```
+
+### Array
+
+```javascript
+const [first, second] = arr;
+```
+
+Supports:
+
+- Default values
+- Renaming
+- Nested destructuring
+- Function parameter destructuring
 
 ---
 
-# Truthy & Falsy with Logical Operators
+## Spread Operator (`...`)
 
-## AND (`&&`)
+Used to expand values.
 
-Returns the **first falsy value**, or the **last value if all operands are truthy**.
-
-```javascript
-5 && 10
-```
-
-Output
+Examples
 
 ```javascript
-10
-```
+const copy = [...arr];
 
-```javascript
-0 && 10
-```
+const userCopy = { ...user };
 
-Output
-
-```javascript
-0
+Math.max(...numbers);
 ```
 
 ---
 
-## OR (`||`)
+## Rest Operator (`...`)
 
-Returns the **first truthy value**.
+Used to collect values.
 
-```javascript
-0 || 10
-```
-
-Output
+Examples
 
 ```javascript
-10
-```
+function sum(...numbers) {}
 
-```javascript
-"Hello" || "World"
-```
+const [first, ...rest] = arr;
 
-Output
-
-```javascript
-Hello
+const { name, ...others } = user;
 ```
 
 ---
 
-## Nullish Coalescing (`??`)
+## Spread vs Rest
 
-Returns the right-hand value only when the left-hand value is `null` or `undefined`.
-
-```javascript
-0 ?? 100
-```
-
-Output
-
-```javascript
-0
-```
-
-```javascript
-null ?? 100
-```
-
-Output
-
-```javascript
-100
-```
+| Spread | Rest |
+|---------|------|
+| Expands values | Collects values |
+| Function call | Function parameters |
+| Copy/Merge arrays & objects | Remaining values |
 
 ---
 
-# React Examples
+## React Usage
 
-### Conditional Rendering
-
-```jsx
-{isLoggedIn && <Dashboard />}
-```
-
-### Default Value
-
-```javascript
-const username = props.name ?? "Guest";
-```
-
-Prefer `??` over `||` when `0`, `false`, or `""` are valid values.
+- Props Destructuring
+- `useState()` Array Destructuring
+- Immutable State Updates using Spread
+- Optional Chaining for API Responses
+- Template Literals for Dynamic UI
+- `??` for Default Values
 
 ---
 
-# Common Mistakes
+## Interview Tips
 
-❌ Empty array is falsy
-
-```javascript
-Boolean([]);
-```
-
-Output
-
-```javascript
-true
-```
-
----
-
-❌ Empty object is falsy
-
-```javascript
-Boolean({});
-```
-
-Output
-
-```javascript
-true
-```
-
----
-
-❌ `"false"` is falsy
-
-```javascript
-Boolean("false");
-```
-
-Output
-
-```javascript
-true
-```
-
-Because it is a **non-empty string**.
-
----
-
-# Interview Questions
-
-1. How many falsy values are there in JavaScript?
-2. Is an empty array truthy or falsy?
-3. Is an empty object truthy or falsy?
-4. What is Boolean coercion?
-5. What is the difference between `||` and `??`?
-6. Why is `"false"` truthy?
-7. What does `&&` return?
-8. What does `||` return?
-
----
-
-# 📝 Summary
-
-- JavaScript automatically converts values to `true` or `false` in conditional statements.
-- There are **exactly 8 falsy values**.
-- Every other value is **truthy**.
-- `&&` returns the first falsy value or the last truthy value.
-- `||` returns the first truthy value.
-- `??` only checks for `null` and `undefined`.
-- Understanding truthy and falsy values helps avoid bugs in JavaScript and React applications.
+- Prefer `===` over `==`
+- Know all **8 falsy values**
+- Understand `||` vs `??`
+- Remember Spread creates a **shallow copy**
+- Know Object vs Array Destructuring
+- Understand Optional Chaining (`?.`)
