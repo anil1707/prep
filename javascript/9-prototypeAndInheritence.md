@@ -1,382 +1,244 @@
-# Module 9 – Prototype & Inheritance
+# Module 9 – Prototype & Inheritance (Quick Revision)
 
-# Part 2 – What is a Prototype? ⭐⭐⭐⭐⭐
+## 1. Prototype
 
----
-
-# 📖 Introduction
-
-In the previous lesson, we learned **why** JavaScript introduced prototypes:
-
-* To avoid duplicating methods.
-* To share common behavior between objects.
-
-Now let's answer the next question:
-
-> **What exactly is a prototype?**
-
----
-
-# Definition
-
-A **prototype** is simply **another object**.
-
-Every ordinary JavaScript object has a hidden internal link to another object called its **prototype**.
-
-This hidden link is represented in the ECMAScript specification as:
-
-```text
-[[Prototype]]
-```
-
-It is an **internal slot**, not a normal property.
-
----
-
-# Example
+* Every JavaScript object has a hidden internal property called **`[[Prototype]]`**.
+* It points to another object.
+* If a property is not found on the current object, JavaScript looks in its prototype.
 
 ```javascript
 const animal = {
-    eats: true
+  eat() {
+    console.log("Eating");
+  }
 };
 
 const dog = Object.create(animal);
 
-dog.name = "Tommy";
+dog.eat(); // Eating
 ```
 
-Conceptually:
+---
+
+## 2. Prototype Chain
+
+JavaScript searches properties in this order:
 
 ```text
-dog
+Object
+   ↓
+Prototype
+   ↓
+Prototype
+   ↓
+Object.prototype
+   ↓
+null
+```
 
-↓
+Search stops when:
 
-{
-    name: "Tommy"
+* ✅ Property is found
+* ✅ Prototype becomes `null`
+
+---
+
+## 3. `[[Prototype]]` vs `__proto__`
+
+### `[[Prototype]]`
+
+* Internal hidden slot
+* Used by JavaScript engine
+* Cannot be accessed directly
+
+### `__proto__`
+
+* Legacy accessor
+* Gives access to `[[Prototype]]`
+
+```javascript
+Object.getPrototypeOf(obj);   // Recommended
+
+obj.__proto__;                // Legacy
+```
+
+---
+
+## 4. `prototype`
+
+Only **functions** have a `prototype` property.
+
+```javascript
+function Person(){}
+
+console.log(Person.prototype);
+```
+
+Purpose:
+
+* Used by `new`
+* Shared methods are stored here
+
+```javascript
+Person.prototype.greet = function(){
+    console.log("Hello");
+}
+```
+
+---
+
+## 5. `prototype` vs `__proto__`
+
+| prototype                       | **proto**                                  |
+| ------------------------------- | ------------------------------------------ |
+| Exists on constructor functions | Exists on objects (via `Object.prototype`) |
+| Used by `new`                   | Used for property lookup                   |
+| Creates future instances        | Links current object to its prototype      |
+
+---
+
+## 6. Constructor Function
+
+```javascript
+function Person(name){
+    this.name = name;
 }
 
-↓
+const p = new Person("Anil");
+```
 
-[[Prototype]]
+### `new` internally
+
+1. Create empty object
+2. Set `[[Prototype]] = Person.prototype`
+3. Execute constructor
+4. Return object
+
+---
+
+## 7. ES6 Class
+
+```javascript
+class Person{
+
+    constructor(name){
+        this.name = name;
+    }
+
+    greet(){
+        console.log("Hello");
+    }
+
+}
+```
+
+* Classes are **syntactic sugar** over constructor functions.
+* `typeof Person` → `"function"`
+* Methods are stored on `Person.prototype`.
+
+---
+
+## 8. `extends`
+
+```javascript
+class Animal{}
+
+class Dog extends Animal{}
+```
+
+Internally:
+
+```text
+Dog.prototype
+        │
+        ▼
+Animal.prototype
+```
+
+* Doesn't copy methods.
+* Creates prototype links.
+
+---
+
+## 9. `super`
+
+### Parent Constructor
+
+```javascript
+super(name);
+```
+
+Must be called before `this` inside a derived class constructor.
+
+### Parent Method
+
+```javascript
+super.speak();
+```
+
+Calls the parent class method.
+
+---
+
+## 10. `Object.create()`
+
+```javascript
+const dog = Object.create(animal);
+```
+
+Internally:
+
+```text
+dog.[[Prototype]]
 
 ↓
 
 animal
-
-↓
-
-{
-    eats: true
-}
 ```
 
-Notice:
-
-`dog` doesn't copy `animal`.
-
-Instead,
-
-`dog` points to `animal`.
-
----
-
-# Why is this Useful?
-
-Suppose we do:
-
-```javascript
-console.log(dog.eats);
-```
-
-Question:
-
-Does `dog` have an `eats` property?
-
-No.
-
-Then why is the output:
-
-```text
-true
-```
-
-Because JavaScript automatically follows the prototype.
+* Doesn't copy properties.
+* Creates a prototype link.
 
 ---
 
 # Property Lookup
 
-When JavaScript evaluates:
-
 ```javascript
-dog.eats
+obj.property
 ```
 
-It performs this algorithm.
+JavaScript searches:
 
 ```text
-Step 1
-
-Look inside dog
-
-↓
-
-Property Found?
-
-↓
-
-No
-
-↓
-
-Step 2
-
-Go to dog.[[Prototype]]
-
-↓
-
-animal
-
-↓
-
-Property Found?
-
-↓
-
-Yes
-
-↓
-
-Return true
-```
-
-This automatic searching is called **property lookup**.
-
----
-
-# Another Example
-
-```javascript
-const animal = {
-    eats: true
-};
-
-const dog = Object.create(animal);
-
-dog.name = "Tommy";
-
-console.log(dog.name);
-```
-
-Search:
-
-```text
-dog
-
-↓
-
-name ?
-
-↓
-
-Found
-
-↓
-
-Return "Tommy"
-```
-
-Prototype isn't checked because the property exists on the object itself.
-
----
-
-# Prototype Lookup Stops When Found
-
-Suppose:
-
-```javascript
-const animal = {
-    eats: true
-};
-
-const dog = Object.create(animal);
-
-dog.eats = false;
-
-console.log(dog.eats);
-```
-
-Output
-
-```text
-false
-```
-
-Search:
-
-```text
-dog
-
-↓
-
-eats ?
-
-↓
-
-Found
-
-↓
-
-Return false
-```
-
-JavaScript never checks the prototype.
-
-This is called **property shadowing**.
-
----
-
-# Prototype is Just Another Object
-
-Many developers imagine something magical.
-
-Actually:
-
-```text
+Current Object
+      ↓
 Prototype
-
-↓
-
-Normal JavaScript Object
-```
-
-There is nothing special about it except that JavaScript uses it during property lookup.
-
----
-
-# Every Object Has a Prototype
-
-```javascript
-const obj = {};
-
-console.log(
-    Object.getPrototypeOf(obj)
-);
-```
-
-Output
-
-```text
+      ↓
+Next Prototype
+      ↓
 Object.prototype
+      ↓
+null
 ```
-
-Objects created using `{}` automatically inherit from `Object.prototype`.
 
 ---
 
-# Arrays Also Have a Prototype
-
-```javascript
-const arr = [];
-
-console.log(
-    Object.getPrototypeOf(arr)
-);
-```
-
-Output
+# Complete Inheritance Flow
 
 ```text
-Array.prototype
-```
-
-That's why arrays can use methods like:
-
-```javascript
-arr.map();
-
-arr.filter();
-
-arr.push();
-```
-
-These methods aren't stored inside every array.
-
-They live on `Array.prototype`.
-
----
-
-# Functions Also Have a Prototype
-
-```javascript
-function greet() {}
-
-console.log(
-    Object.getPrototypeOf(greet)
-);
-```
-
-Output
-
-```text
-Function.prototype
-```
-
-That's why every function can use:
-
-```javascript
-greet.call();
-
-greet.apply();
-
-greet.bind();
-```
-
-These methods come from `Function.prototype`.
-
----
-
-# Visual Representation
-
-```text
-dog
+Instance
 
 ↓
 
-Own Properties
+Constructor.prototype
 
 ↓
 
-name
-
-↓
-
-[[Prototype]]
-
-↓
-
-animal
-
-↓
-
-eats
-
-↓
-
-[[Prototype]]
+Parent.prototype
 
 ↓
 
 Object.prototype
-
-↓
-
-toString()
-
-hasOwnProperty()
-
-valueOf()
 
 ↓
 
@@ -385,217 +247,81 @@ null
 
 ---
 
-# Where Does `toString()` Come From?
+# Important Relationships
 
 ```javascript
-const user = {};
+function Person(){}
 
-console.log(user.toString);
+const p = new Person();
 ```
 
-Question:
+```javascript
+Object.getPrototypeOf(p) === Person.prototype        // true
 
-Did we define `toString()`?
+p.__proto__ === Person.prototype                     // true
 
-No.
+Person.__proto__ === Function.prototype              // true
 
-Then why does it exist?
-
-Search:
-
-```text
-user
-
-↓
-
-toString ?
-
-↓
-
-Not Found
-
-↓
-
-Object.prototype
-
-↓
-
-Found
+Person.prototype.__proto__ === Object.prototype      // true
 ```
 
-So the method comes from `Object.prototype`.
-
 ---
 
-# Common Mistakes
+# Golden Rules
 
-### ❌ Mistake 1
-
-Thinking the prototype is copied into the object.
-
-It isn't.
-
-The object stores a **reference** to its prototype.
-
----
-
-### ❌ Mistake 2
-
-Thinking the prototype is searched first.
-
-JavaScript always searches:
-
-1. The object itself.
-2. Its prototype.
-3. The prototype's prototype.
-4. Until `null`.
-
----
-
-### ❌ Mistake 3
-
-Thinking the prototype is special data.
-
-It's simply another object connected through the hidden `[[Prototype]]` link.
+* Every object has `[[Prototype]]`.
+* `__proto__` is a legacy way to access `[[Prototype]]`.
+* Only functions have a `prototype` property.
+* `new` sets `instance.[[Prototype]] = Constructor.prototype`.
+* `extends` creates prototype links; it doesn't copy methods.
+* `super()` calls the parent constructor.
+* `super.method()` calls the parent method.
+* `Object.create()` creates a new object with the specified prototype.
 
 ---
 
 # Interview Questions
 
-### Q1. What is a prototype?
+### What is a Prototype?
 
-A prototype is another object linked through the internal `[[Prototype]]` slot that JavaScript consults when a property isn't found on the current object.
+An object that JavaScript uses for inheritance when a property isn't found on the current object.
 
----
+### What is the Prototype Chain?
 
-### Q2. Why do arrays have `map()`?
+The chain JavaScript traverses during property lookup until it reaches `null`.
 
-Because `map()` is defined on `Array.prototype`.
+### Difference between `prototype` and `__proto__`?
 
----
+* `prototype` → Property on constructor functions used by `new`.
+* `__proto__` → Legacy accessor to an object's internal `[[Prototype]]`.
 
-### Q3. Why do functions have `call()`?
+### Are ES6 classes real classes?
 
-Because `call()` is defined on `Function.prototype`.
+No. They are syntactic sugar over constructor functions and the prototype system.
 
----
+### Does `extends` copy methods?
 
-### Q4. Why do objects have `toString()`?
+No. It links `Child.prototype` to `Parent.prototype`.
 
-Because `toString()` is inherited from `Object.prototype`.
+### How does `new` work?
 
----
+1. Create object
+2. Link prototype
+3. Execute constructor
+4. Return object
 
-# 🔥 Interview Question
+### Does `Object.create()` copy properties?
 
-Predict the output.
-
-```javascript
-const animal = {
-    eats: true
-};
-
-const dog = Object.create(animal);
-
-console.log(dog.eats);
-```
-
-Output
-
-```text
-true
-```
-
-Explanation:
-
-`dog` doesn't have `eats`.
-
-JavaScript follows `dog.[[Prototype]]` and finds `eats` on `animal`.
+No. It only creates a prototype link.
 
 ---
 
-# 🧠 Mental Model
+# One-Line Memory Tricks
 
-Whenever you access:
-
-```javascript
-obj.property
-```
-
-Think:
-
-```text
-Object
-
-↓
-
-Property Found?
-
-↓
-
-Yes → Return
-
-↓
-
-No
-
-↓
-
-Prototype
-
-↓
-
-Found?
-
-↓
-
-Yes → Return
-
-↓
-
-No
-
-↓
-
-Next Prototype
-
-↓
-
-...
-
-↓
-
-null
-
-↓
-
-undefined
-```
-
-JavaScript never jumps directly to the prototype.
-
-It always checks the object first.
-
----
-
-# 📝 Summary
-
-* A prototype is another object.
-* Every ordinary object has a hidden `[[Prototype]]` link.
-* JavaScript searches the object first, then its prototype.
-* Properties aren't copied from the prototype.
-* Arrays inherit from `Array.prototype`.
-* Functions inherit from `Function.prototype`.
-* Most ordinary objects inherit from `Object.prototype`.
-
----
-
-## 🚀 What's Next?
-
-Now that you understand **what a prototype is**, the next lesson is:
-
-# **Prototype Chain**
-
-We'll see how JavaScript continues searching through **multiple prototypes**, all the way to `null`.
-
-This is the mechanism behind JavaScript inheritance and one of the most frequently asked interview topics.
+* **Prototype → Shared methods**
+* **`[[Prototype]]` → Inheritance**
+* **`__proto__` → Access prototype (legacy)**
+* **`prototype` → Used by `new`**
+* **`extends` → Prototype linking**
+* **`super()` → Parent constructor**
+* **`Object.create()` → Create object with custom prototype**
