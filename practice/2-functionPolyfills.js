@@ -40,3 +40,5 @@ let func = hello.myBind(obj, "mumbai", "malad");
 
 func();
 
+
+console.log("prototype: ", Object.getPrototypeOf(hello))
