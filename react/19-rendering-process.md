@@ -1,4 +1,4 @@
-# Module 23 – React Rendering Process ⭐⭐⭐⭐⭐
+# Module 19 – React Rendering Process ⭐⭐⭐⭐⭐
 
 ## Topics Covered
 
