@@ -5,10 +5,10 @@ import { useSelector } from "react-redux";
 const ProtectedRoute = () => {
     // const {userDetail} = useUserContext()
     const userData = useSelector(state => state.auth)
-    const isLoggedin = userData?.isLoggedin ? true : false
+    // const isLoggedin = userData?.isLoggedIn ? true : false
 
 
-    // const isLoggedin = true
+    const isLoggedin = true
 
   const isAuthenticated = isLoggedin ? true : false; // Replace with real auth
 

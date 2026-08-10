@@ -6,6 +6,7 @@ import Contact from "./pages/Contact"
 import Dashboard from "./pages/Dashboard"
 import ProtectedRoute from "./commponents/ProtectedRoutes"
 import Login from "./pages/Login"
+import Cart from "./pages/Cart"
 
 const RouteConfig = () => {
     return (
@@ -18,6 +19,7 @@ const RouteConfig = () => {
                     <Route path="about" element={<About />} />
                     <Route path="contact" element={<Contact />} />
                     <Route path="dashboard" element={<Dashboard />} />
+                    <Route path="cart" element={<Cart />} />
                 </Route>
             </Route>
 

@@ -2,8 +2,7 @@ import { useState } from "react";
 import { useUserContext } from "../context/userContext";
 import { useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
-import { LOGIN } from "../redux/action";
-import { loggin } from "../redux/actionCreator";
+import { login } from "../redux/slice/authSlice";
 
 const Login = () => {
     // const {login} = useUserContext();
@@ -26,10 +25,8 @@ const Login = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    dispatch(loggin(formData))
-    // login(formData)
+    dispatch(login(formData));
     navigete("/")
-
     // API Call
   };
 
